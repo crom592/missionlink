@@ -112,10 +112,10 @@ WSGI_APPLICATION = 'missionlink.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'link',
-        'USER': 'link',
-        'PASSWORD': 'link2023!',
-        'HOST': 'localhost',
+        'NAME': 'verceldb',
+        'USER': 'default',
+        'PASSWORD': '6wJRsCYnyNd5',
+        'HOST': 'ep-late-art-63790987-pooler.us-east-1.postgres.vercel-storage.com',
         'PORT': '5432',
     }
 }
