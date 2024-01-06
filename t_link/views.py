@@ -25,7 +25,7 @@ import logging
 # Application imports
 
 # Create your views here.
-ITEM_COUNT_PER_PAGE = 30
+ITEM_COUNT_PER_PAGE = 5
 SCHEMA_FILED_EXCEPT = [
     "page",
     # "filter",
@@ -87,35 +87,68 @@ def readQuery(request, key):
     return Q(**{key: value})
 
 
-def applyOption(request, queryset):
-    op = request.GET.get("filter")
+def filter_by_search_term(queryset, search_term):
+    """Filter the queryset by the provided search term."""
+    search_conditions = (
+        Q(title__icontains=search_term) |
+        Q(description__icontains=search_term) |
+        Q(country__icontains=search_term) |
+        Q(language__icontains=search_term)
+    )
+    return queryset.filter(search_conditions)
+
+
+def filter_by_logic(request, queryset):
+    """Filter the queryset based on logic provided in the request."""
     logic = request.GET.get("logic")
     where = [Q()]
-    where__and = [Q()]
     used_keys = []
+    
     if logic:
         keys = logic.split("__OR__")
         for key in keys:
             used_keys.append(key)
             where.append(readQuery(request, key))
+    
+    return queryset.filter(reduce(lambda x, y: x | y, where)), used_keys
+
+
+def filter_by_simple_params(request, queryset, used_keys):
+    """Filter the queryset based on simple parameters provided in the request."""
+    where__and = [Q()]
     params = {}
+    
     for key in request.GET:
         if key in SCHEMA_FILED_EXCEPT or key in used_keys:
             continue
-        if key == "filter" and op is not None:
-            params = json.loads(op)
+        if key == "filter":
+            params = json.loads(request.GET.get(key))
         else:
             where__and.append(readQuery(request, key))
+    
+    return queryset.filter(reduce(lambda x, y: x & y, where__and), **params)
 
-    queryset = queryset.filter(
-        reduce(lambda x, y: x | y, where),
-        reduce(lambda x, y: x & y, where__and),
-    ).distinct()
 
-    if len(params) != 0:
-        queryset = queryset.filter(**params).distinct()
+def applyOption(request, queryset):
+    """Apply filters to the queryset based on request parameters."""
+    
+    # Filter by search term
+    search_term = request.GET.get('search', None)
+    if search_term:
+        queryset = filter_by_search_term(queryset, search_term)
+    
+    # Filter by logic
+    queryset, used_keys = filter_by_logic(request, queryset)
+    
+    # Exclude 'search' from the list of used_keys to ensure it's not processed again
+    used_keys.append('search')
+    
+    # Filter by simple parameters
+    queryset = filter_by_simple_params(request, queryset, used_keys)
 
-    return queryset
+    return queryset.distinct()
+
+
 
 def my_note(request):
             return render(request, 'my_note.html')

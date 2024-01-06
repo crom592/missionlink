@@ -39,6 +39,7 @@ urlpatterns = [
     # path('app이름', include('app이름.urls'))
     path("api-", include("t_link.urls")),
     path('admin/', admin.site.urls),
+    path('api-', include(router.urls)),  # 이 부분을 추가
 ]
 
 urlpatterns += router.urls

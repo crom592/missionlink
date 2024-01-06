@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+# from dotenv import dotenv_values
+from dotenv import load_dotenv
+load_dotenv(".env.dev")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +25,62 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ac53(ohq&m7wod#8e0e=nmu7#%=+6hu2+adv$==ra0(iev+1k('
+# SECRET_KEY = 'django-insecure-ac53(ohq&m7wod#8e0e=nmu7#%=+6hu2+adv$==ra0(iev+1k('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS = ["*"]
+# .env 파일의 위치를 지정
+# dotenv_values(".env.dev")
+config = os.environ.get('MySecret')
+
+
+# 이제 config를 사용하여 환경 변수를 읽어올 수 있습니다.
+SECRET_KEY = os.environ.get("SECRET_KEY", default="fallback-secret-key")
+
+# DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
+# SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = bool(int(os.environ.get("DEBUG", default=0)))
+
+
+# ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", default="", cast=lambda v: [s.strip() for s in v.split(",")])
+# ALLOWED_HOSTS = [s.strip() for s in os.environ.get("ALLOWED_HOSTS", "").split(",")]
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
+
+
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get("DB_NAME", default="default_db_name"),
+#         'USER': os.environ.get("DB_USER", default="default_db_user"),
+#         'PASSWORD': os.environ.get("DB_PASSWORD", default="default_db_password"),
+#         'HOST': os.environ.get("DB_HOST", default="localhost"),
+#         'PORT': os.environ.get("DB_PORT", default="5432"),
+#     }
+# }
+DATABASES = {
+    'default': {
+        'ENGINE': os.environ.get("SQL_ENGINE", 'django.db.backends.postgresql'),
+        'NAME': os.environ.get("DB_NAME", 'default_db_name'),
+        'USER': os.environ.get("DB_USER", 'default_db_user'),
+        'PASSWORD': os.environ.get("DB_PASSWORD", 'default_db_password'),
+        'HOST': os.environ.get("DB_HOST", 'localhost'),
+        'PORT': os.environ.get("DB_PORT", '5432'),
+    }
+}
+
+
+# SECRET_KEY = os.environ.get("SECRET_KEY")
+
+# DEBUG = bool(os.environ.get("DEBUG", default=0))
+
+# # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -110,16 +164,16 @@ WSGI_APPLICATION = 'missionlink.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'verceldb',
-        'USER': 'default',
-        'PASSWORD': '6wJRsCYnyNd5',
-        'HOST': 'ep-late-art-63790987-pooler.us-east-1.postgres.vercel-storage.com',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'verceldb',
+#         'USER': 'default',
+#         'PASSWORD': '6wJRsCYnyNd5',
+#         'HOST': 'ep-late-art-63790987-pooler.us-east-1.postgres.vercel-storage.com',
+#         'PORT': '5432',
+#     }
+# }
 
 LOGGING = {
     'version': 1,
