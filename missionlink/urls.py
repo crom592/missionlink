@@ -1,5 +1,5 @@
 # Third-party imports
-from baton.autodiscover import admin
+# from baton.autodiscover import admin
 from rest_framework import urls, routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -38,7 +38,7 @@ urlpatterns = [
     # 이 아랫 부분은 우리가 사용하는 app들의 URL들을 넣습니다.
     # path('app이름', include('app이름.urls'))
     path("api-", include("t_link.urls")),
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
     path('api-', include(router.urls)),  # 이 부분을 추가
 ]
 
