@@ -3,6 +3,8 @@
 from rest_framework import urls, routers, permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.conf import settings
+from django.conf.urls.static import static
 
 # Django imports
 from django.urls import path, re_path, include
@@ -40,6 +42,6 @@ urlpatterns = [
     path("api-", include("t_link.urls")),
     # path('admin/', admin.site.urls),
     path('api-', include(router.urls)),  # 이 부분을 추가
-]
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += router.urls
