@@ -137,6 +137,7 @@ CORS_ALLOW_METHODS = [
 CSRF_TRUSTED_ORIGINS = (
     "http://127.0.0.1",
     "http://localhost",
+    ""
 )
 
 ROOT_URLCONF = 'missionlink.urls'
